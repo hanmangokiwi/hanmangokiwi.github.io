@@ -1,13 +1,23 @@
+html *
+{
+   font-family: "Veranda", Geneva, sans-serif !important;
+}
+
+
+
 header {
     margin: -8px;
     background-color: black;
+    text-decoration: none;
 }
 
 body {
     background-color:rgb(48,48,48);
 }
 
-
+.image-link{
+  text-decoration: none;
+}
 .header-button {
     color: white;
     text-align: center;
@@ -19,7 +29,30 @@ body {
     text-decoration: none;
     position: relative;
     bottom: 12px;
+    text-decoration: none;
 }
 .header-button:hover {
     color: gray;
+    text-decoration: none;
+}
+
+.home-image{
+    alt:"Main Page";
+    height:40px;
+    resize: both;
+    text-decoration: none;
+}
+
+.home-image:hover{
+    opacity:0.5;
+    text-decoration: none;
+}
+
+h1{
+    color:white;
+    margin-right: 16px;
+}
+
+p{
+    color:white;
 }

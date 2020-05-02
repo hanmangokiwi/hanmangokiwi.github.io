@@ -15,7 +15,7 @@ body {
     background-color:rgb(48,48,48);
 }
 
-.image-link{
+.a-link{
   text-decoration: none;
 }
 .header-button {
@@ -55,4 +55,90 @@ h1{
 
 p{
     color:white;
+}
+
+.tool-button{
+    height:80px;
+    resize: both;
+    border: 0;
+    text-decoration: none;
+
+}
+
+h2{
+    color:white;
+    margin-left: 32px;
+    margin-right: 16px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    text-decoration: none;
+}
+
+span{
+    color: white;
+}
+
+input {
+    padding: 12px 20px;
+    margin: 8px;
+    box-sizing: border-box;
+    background-color: rgb(48,48,48);
+    color: white;
+    border: 3px solid gray;
+    -webkit-transition: 0.5s;
+    transition: 0.5s;
+    outline: none;
+}
+
+input[type=text]:focus {
+    border: 3px solid green;
+}
+
+.box{
+    width: 300x;
+    border:3px solid red;
+    float: left;
+    margin-top: 6px;
+    margin-left: 14px;
+    
+}
+
+.formula{
+    font-size:16px;
+}
+.variables{
+    width: 300px;
+    margin-bottom: 90px;
+}
+.f1{
+    display: inline;
+    margin-left:13.9px
+}
+.calc-input{
+    display: inline;
+}
+
+@media only screen and (min-width: 600px) {
+    /*for tablets*/
+    .box{
+        width: fit-content;
+        border:3px solid blue;
+    }
+    .variables{
+        width: 580px;
+    }
+    .f1{
+        display: inline;
+        margin-left:0px
+    }
+}
+@media only screen and (min-width: 1102px) {
+    /*for desktops*/
+    .box{
+        width: fit-content;
+        border:3px solid black;
+    }
+    .variables{
+        width: fit-content;
+    }
 }

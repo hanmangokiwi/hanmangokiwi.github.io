@@ -79,7 +79,7 @@ span{
 }
 
 input {
-    padding: 12px 10px;
+    padding: 12px 8px;
     margin: 8px;
     box-sizing: border-box;
     background-color: rgb(48,48,48);
@@ -95,7 +95,7 @@ input[type=text]:focus {
 }
 
 .section{
-    width: 490px;
+    width: 492px;
 }
 
 .var{

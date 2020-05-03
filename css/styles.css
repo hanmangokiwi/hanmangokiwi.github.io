@@ -9,6 +9,9 @@ header {
     margin: -8px;
     background-color: black;
     text-decoration: none;
+    overflow: hidden;
+    white-space: nowrap;
+    width: auto;
 }
 
 body {

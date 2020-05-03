@@ -79,7 +79,7 @@ span{
 }
 
 input {
-    padding: 12px 12px;
+    padding: 12px 10px;
     margin: 8px;
     box-sizing: border-box;
     background-color: rgb(48,48,48);
@@ -95,12 +95,12 @@ input[type=text]:focus {
 }
 
 .section{
-    width: 500px;
+    width: 490px;
 }
 
 .var{
     border:3px solid black;
-    margin-left: 5px;
+    margin-left: 0px;
     margin-bottom: 5px;
     width: fit-content;
     display: inline-block;
@@ -108,17 +108,20 @@ input[type=text]:focus {
 }
 
 .equation{
-    width: 1052px;
+    width: 480px;
 }
 .equation-input{
-    width: 482px;
+    width: 476px;
 }
 
-@media only screen and (min-width: 1100px) {
+@media only screen and (min-width: 1050px) {
     .section{
-        width: 990px;
+        width: 1014px;
+    }
+    .var{
+        margin-left: 10px;
     }
     .equation-input{
-        width: 974px;
+        width: 998px;
     }
 }

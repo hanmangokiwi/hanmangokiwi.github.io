@@ -83,7 +83,7 @@ span{
 
 input {
     padding: 12px 8px;
-    margin: 8px;
+    margin: 6px;
     box-sizing: border-box;
     background-color: rgb(48,48,48);
     color: white;
@@ -98,7 +98,7 @@ input[type=text]:focus {
 }
 
 .section{
-    width: 492px;
+    width: 480px;
 }
 
 .var{
@@ -109,24 +109,22 @@ input[type=text]:focus {
     display: inline-block;
     overflow: hidden;
     white-space: nowrap;
-    
 }
 
 .equation{
     width: 480px;
 }
 .equation-input{
-    width: 476px;
+    width: 468px;
 }
-
 @media only screen and (min-width: 1050px) {
     .section{
-        width: 1014px;
+        width: 980px;
     }
     .var{
         margin-left: 10px;
     }
     .equation-input{
-        width: 998px;
+        width: 964px;
     }
 }

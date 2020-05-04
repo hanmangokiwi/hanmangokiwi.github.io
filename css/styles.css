@@ -128,3 +128,14 @@ input[type=text]:focus {
         width: 964px;
     }
 }
+
+.submit-form {
+    background-color: rgb(70, 70, 70);
+    border: 3px solid gray;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+  }

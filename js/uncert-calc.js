@@ -297,6 +297,9 @@ function roundOff(final){
             if (final[0][1][roundIndex][0]=="."){
                 final[0][1][roundIndex] = "0"+final[0][1][roundIndex]
             }
+            if (final[0][1][roundIndex][0]=="0"){
+                final[0][1][roundIndex] = "0."+final[0][1][roundIndex].slice(1)
+            }
         });
         showStep("round",...saveForSteps,final)
     }

@@ -26,7 +26,6 @@ submitEquation = function(){
 
 
 
-
     terms.unshift("(")
     terms.push(")")
 

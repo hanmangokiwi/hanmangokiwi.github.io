@@ -23,7 +23,7 @@ submitEquation = function(){
     skip = 0;
     uncert1 = [document.getElementById("uncert-1").value,document.getElementById("uncert-1u").value];
     uncert2 = [document.getElementById("uncert-2").value,document.getElementById("uncert-2u").value];
-    terms = (document.getElementById("uncert-equation").value).split("");
+    terms = (document.getElementById("uncert-equation").value).toLowerCase().split("");
     
 
     var test = 0

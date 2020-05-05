@@ -26,7 +26,7 @@ submitEquation = function(){
     terms = (document.getElementById("uncert-equation").value).split("");
     
 
-    var test = 5
+    var test = 0
     if(test==1){
         uncert1 = ["1.1", "0.315"]
         uncert2 = ["0", "0"]
@@ -47,7 +47,8 @@ submitEquation = function(){
         uncert1 = ["74123.6341", "315.126317"]
         uncert2 = ["1634.7432", "2.1"]
         terms = ["(","a","(","a","+","b","+","a",")","/","b",")","7","^","2"]
-    }
+    }//Values: 333006535.3311124 -> 330000000
+    //Uncertainty: 3248468.4798105145 -> 3200000
 
 
 

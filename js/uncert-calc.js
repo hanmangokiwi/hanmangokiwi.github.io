@@ -26,6 +26,10 @@ submitEquation = function(){
         uncert1 = ["12345678.90", "3512.35"]
         uncert2 = ["0", "0"]
         terms = ["a", "+", "2"]
+    }else if(test==3){
+        uncert1 = ["63.213", "0.35"]
+        uncert2 = ["13.621", "3.4"]
+        terms = ["(","a", "*", "b",")","/","2"]
     }
 
 
@@ -90,13 +94,13 @@ function showStep(operation,term1,term2, result){
         case("*"):
             var title = "Multiplication: Multiply the values, add percent uncertainties. Convert back to absolute unceratinty."
             var text = `Values: ${term1[0]} * ${term2[0]} = ${result[0]}<br>
-            Uncertainty: ${term1[0]} * ${term2[0]} * (${term1[0]} / ${term1[1]} + ${term2[0]} / ${term2[1]}) = ${result[1]}<br>`
+            Uncertainty: ${term1[0]} * ${term2[0]} * (${term1[1]} / ${term1[0]} + ${term2[1]} / ${term2[0]}) = ${result[1]}<br>`
             displayStep(title,text);
             break;
         case("/"):
             var title = "Division: Divide the values, add percent uncertainties. Convert back to absolute unceratinty."
             var text = `Values: ${term1[0]} / ${term2[0]} = ${result[0]}<br>
-            Uncertainty: ${term1[0]} / ${term2[0]} * (${term1[0]} / ${term1[1]} + ${term2[0]} / ${term2[1]}) = ${result[1]}<br>`
+            Uncertainty: ${term1[0]} / ${term2[0]} * (${term1[1]} / ${term1[0]} + ${term2[1]} / ${term2[0]}) = ${result[1]}<br>`
             displayStep(title,text);
             break;
         case("^1"):
@@ -230,6 +234,7 @@ function roundOff(final){
                 if(splitNumber[0][splitNumber[0].length-1]=="."){
                     if(splitNumber[0][splitNumber[0].length-2]!="0"){
                         splitNumber[0]=splitNumber[0].slice(0,splitNumber[0].length-1)
+                        //
                     }
                 }
             }else{
@@ -315,8 +320,19 @@ function removeEnd(final){
                         splitLength--
                     }
                 }
-                final[0][1][finalIndex] = finalTerms
+            }else{
+                if(minLength<0){
+                    splitLength=0;
+                    //splitLength+splitTerms[1].length
+                    while(splitLength>minLength){
+                        finalTerms[finalTerms.length+splitLength]
+                        finalTerms = finalTerms.slice(0, finalTerms.length+splitLength-1) + "0" + finalTerms.slice(finalTerms.length+splitLength);
+                        /////gasdgadsgadgasdg nononoo
+                        splitLength--
+                    }
+                }
             }
+            final[0][1][finalIndex] = finalTerms
         });
         showStep("slice",...saveForSteps,final)
     }

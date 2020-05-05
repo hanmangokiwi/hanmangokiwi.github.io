@@ -599,11 +599,7 @@ function termValidity(termN){
     if (termN==0 && operatorsB.includes(currentTerm)){
         return "startIllegal";
     }else if((isVar(currentTerm)&&isVar(nextTerm))||(isVar(currentTerm)&&nextTerm=="(")||(currentTerm==")"&&isVar(nextTerm))){
-        
-
-        terms.slice(0, termN) + "*" + terms.slice(termN+1);
-
-        return "insertMultiplication"
+        terms = [...terms.slice(0, termN+1),"*",...terms.slice(termN+1)];
     }
     else if(!isNaN(terms[termN-1]) && numItems.includes(currentTerm)){
         terms[termN-1] = terms[termN-1]+currentTerm

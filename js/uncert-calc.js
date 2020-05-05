@@ -3,6 +3,14 @@ const operatorsA = ["+","-"]
 const operatorsB = ["*","/","^"]
 const otherItems = ["(",")","a","b"]
 const termItems = [...numItems,...operatorsA,...operatorsB,...otherItems];
+const termsAndService = [
+    "not whine when the calculator is wrong but rather tell me what's wrong",
+    "not use this tool to create weapons of mass destruction",
+    "buy me jello :3",
+    "give me a crisp high-five next time on the hallway",
+    "share this with your friends!"
+]
+
 
 var uncert1 = [];
 var uncert2 = [];
@@ -12,6 +20,7 @@ submitEquation = function(){
     uncert1 = [];
     uncert2 = [];
     terms = [];
+    skip = 0;
     uncert1 = [document.getElementById("uncert-1").value,document.getElementById("uncert-1u").value];
     uncert2 = [document.getElementById("uncert-2").value,document.getElementById("uncert-2u").value];
     terms = (document.getElementById("uncert-equation").value).split("");
@@ -61,18 +70,27 @@ function clearData(){
 }
 
 function showResult(final){
+
     if(final[0]=="error"){
         var show = document.createElement("p")
         show.innerHTML=("ERROR: "+errorInfo(final)).toString()
         outputArea.appendChild(show)
 
     }else{
-        var title = document.createElement("h2")
-        title.innerHTML=("Result")
-        outputArea.appendChild(title)
-        var show = document.createElement("p")
-        show.innerHTML=(`${final[0][1][0]}±${final[0][1][1]}`).toString()
-        outputArea.appendChild(show)
+        if(skip==0){
+            var title = document.createElement("h2")
+            title.innerHTML=("Result")
+            outputArea.appendChild(title)
+            var show = document.createElement("p")
+            show.innerHTML=(`${final[0][1][0]}±${final[0][1][1]}`).toString()
+            outputArea.appendChild(show)
+            var title = document.createElement("h2")
+            title.innerHTML=("WARNING:")
+            outputArea.appendChild(title)
+            var show = document.createElement("p")
+            show.innerHTML=(`by looking at the result, you agree to ${termsAndService[Math.floor((termsAndService.length)*(Math.random()))]}`)
+            outputArea.appendChild(show)
+        }
     }
 }
 
@@ -123,8 +141,14 @@ function showStep(operation,term1,term2, result){
                 break;
         case("round"):
             var title = `Rounding: Round everything. ${term1[0]} has ${term1[1]} sig figs, so we reduce everything.`
-            var text = `Values: ${term2[0]} -> ${result[0][1][0]}<br>
-            Uncertainty: ${term2[1]} -> ${result[0][1][1]}<br>`
+            try{
+                var text = `Values: ${term2[0]} -> ${result[0][1][0]}<br>
+                Uncertainty: ${term2[1]} -> ${result[0][1][1]}<br>`
+            }catch{
+                var title = "Are you kidding me?"
+                var text = "you didn't even use the calculator properly. why don't you type the same thing on google?<br>"
+                skip=1
+            }
             displayStep(title,text);
             break;
         case("slice"):
@@ -184,7 +208,9 @@ function roundOff(final){
         if(terms.includes("b")){
             decimalsCheck.push(uncert2[0],uncert2[1])
         }
-        
+        if (decimalsCheck.length=0){
+            skip=1;
+        }
         decimalsCheck.forEach(function(round) {
             if(round.includes(".")){
                 //0.00000000000000000000000001 has many sigs
@@ -215,21 +241,16 @@ function roundOff(final){
             var splitNumber = (round.toExponential()).split("e");
             //trim excess
             if(splitNumber[0].includes(".")){
-
-
-
-
-
-
-
                 //this trims it
-                if(splitNumber[0].includes(".")){
-                    if(splitNumber[0].length>minDecimals){
-                        splitNumber[0]=parseFloat(splitNumber[0]).toFixed(minDecimals-1)
-                    }
-                }else{
-                    if(splitNumber[0].length>minDecimals-1){
-                        splitNumber[0]=parseFloat(splitNumber[0]).toFixed(minDecimals-1)
+                if(minDecimals>0){
+                    if(splitNumber[0].includes(".")){
+                        if(splitNumber[0].length>minDecimals){
+                            splitNumber[0]=parseFloat(splitNumber[0]).toFixed(minDecimals-1)
+                        }
+                    }else{
+                        if(splitNumber[0].length>minDecimals-1){
+                            splitNumber[0]=parseFloat(splitNumber[0]).toFixed(minDecimals-1)
+                        }
                     }
                 }
                 
@@ -282,7 +303,9 @@ function roundOff(final){
     return final
 }
 function removeEnd(final){
-    if (final[0]!="error"){
+    if (skip == 1){
+        return final
+    }else if (final[0]!="error"){
         var minLength = "unset";
         var saveForSteps=[...final[0][1]];
         (final[0][1]).forEach(finalTerms => {
@@ -600,6 +623,7 @@ function termValidity(termN){
         return "startIllegal";
     }else if((isVar(currentTerm)&&(nextTerm=="a"||nextTerm=="b")||(currentTerm=="a"||currentTerm=="b")&&isVar(nextTerm))||(isVar(currentTerm)&&nextTerm=="(")||(currentTerm==")"&&isVar(nextTerm))){
         terms = [...terms.slice(0, termN+1),"*",...terms.slice(termN+1)];
+        return "reduceOne"
     }
     else if(!isNaN(terms[termN-1]) && numItems.includes(currentTerm)){
         terms[termN-1] = terms[termN-1]+currentTerm

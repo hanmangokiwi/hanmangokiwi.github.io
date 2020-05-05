@@ -17,11 +17,15 @@ submitEquation = function(){
     terms = (document.getElementById("uncert-equation").value).split("");
     
 
-    var test = false
-    if(test==true){
-        uncert1 = ["2.3", "3.6"]
-        uncert2 = ["2.2", "1235."]
-        terms = ["a", "/", "6", "6", "2"]
+    var test = 0
+    if(test==1){
+        uncert1 = ["1.1", "0.315"]
+        uncert2 = ["0", "0"]
+        terms = ["a", "+", "5"]
+    }else if(test==2){
+        uncert1 = ["12345678.90", "3512.35"]
+        uncert2 = ["0", "0"]
+        terms = ["a", "+", "2"]
     }
 
 
@@ -30,7 +34,7 @@ submitEquation = function(){
     terms.push(")")
 
     clearData()
-    var final = (roundOff(solveFunction(evaluateFunction())))
+    var final = removeEnd(roundOff(solveFunction(evaluateFunction())))
     showResult(final)
 }
 
@@ -43,17 +47,19 @@ function clearData(){
     outputArea = document.createElement("div")
     
     outputArea.id="outputArea"
+    
     document.getElementById("output").appendChild(outputArea)
-
-
     var nextLine = document.createElement("hr")
+    nextLine.setAttribute("noshade",true)
     outputArea.appendChild(nextLine)
+
+
 }
 
 function showResult(final){
     if(final[0]=="error"){
         var show = document.createElement("p")
-        show.innerHTML=(errorInfo(final)).toString()
+        show.innerHTML=("ERROR: "+errorInfo(final)).toString()
         outputArea.appendChild(show)
 
     }else{
@@ -112,9 +118,15 @@ function showStep(operation,term1,term2, result){
                 displayStep(title,text);
                 break;
         case("round"):
-            var title = `Rounding: To finish it off, we round. ${term1[0]} has ${term1[1]} sig figs, so we reduce everything.`
+            var title = `Rounding: Round everything. ${term1[0]} has ${term1[1]} sig figs, so we reduce everything.`
             var text = `Values: ${term2[0]} -> ${result[0][1][0]}<br>
             Uncertainty: ${term2[1]} -> ${result[0][1][1]}<br>`
+            displayStep(title,text);
+            break;
+        case("slice"):
+            var title = `Cutting: To finish it off, we cut off everything.`
+            var text = `Values: ${term1} -> ${result[0][1][0]}<br>
+            Uncertainty: ${term2} -> ${result[0][1][1]}<br>`
             displayStep(title,text);
             break;
     }
@@ -172,10 +184,16 @@ function roundOff(final){
         decimalsCheck.forEach(function(round) {
             if(round.includes(".")){
                 //0.00000000000000000000000001 has many sigs
-                var numLength = round.length-1
+                if(round[0]=="0"){
+                    var numLength = round.length-2
+                }else{
+                    var numLength = round.length-1
+                }
+                
+
             }else{
                 //2500000000000 does not
-                var numLength = ((parseFloat(round).toExponential()).split("e")[0]).length
+                var numLength = ((parseFloat(round).toExponential()).split("e")[0]).length-1
             }
             if(minDecimals==0||minDecimals>numLength){
                 minDecimals=numLength
@@ -197,7 +215,15 @@ function roundOff(final){
 
 
                 //this trims it
-                splitNumber[0]=parseFloat(splitNumber[0]).toFixed(minDecimals-1)
+                if(splitNumber[0].includes(".")){
+                    if(splitNumber[0].length>minDecimals){
+                        splitNumber[0]=parseFloat(splitNumber[0]).toFixed(minDecimals-1)
+                    }
+                }else{
+                    if(splitNumber[0].length>minDecimals-1){
+                        splitNumber[0]=parseFloat(splitNumber[0]).toFixed(minDecimals-1)
+                    }
+                }
                 
                 
                 
@@ -226,7 +252,7 @@ function roundOff(final){
                     var splitResult = splitNumber[0]
                     finalNumber = parseFloat(splitNumber[1])
                 }
-                if(-finalNumber>splitResult.length){
+                if(-finalNumber>splitLength){
                     final[0][1][roundIndex] = (10**finalNumber).toString().slice(0,-finalNumber)+splitResult
                 }else if(finalNumber<0){
                     final[0][1][roundIndex] = splitResult.slice(0, splitResult.length+finalNumber) + "." + splitResult.slice(splitResult.length+finalNumber);
@@ -238,12 +264,64 @@ function roundOff(final){
             }else{
                 final[0][1][roundIndex]=splitNumber[0]+"*10^"+((parseInt(splitNumber[1])).toString())
             }
+            if (final[0][1][roundIndex][0]=="."){
+                final[0][1][roundIndex] = "0"+final[0][1][roundIndex]
+            }
         });
         showStep("round",...saveForSteps,final)
     }
     return final
 }
+function removeEnd(final){
+    if (final[0]!="error"){
+        var minLength = "unset";
+        var saveForSteps=[...final[0][1]];
+        (final[0][1]).forEach(finalTerms => {
+            if(finalTerms.includes(".")){
+                var splitTerms=finalTerms.split(".")
+            splitLength=splitTerms[1].length
+            }
+            else{
+                splitLength=0
+            }
+            while(finalTerms[finalTerms.length+splitLength-1]=="0" && finalTerms.length+splitLength>1){
+                splitLength--
+            }
 
+            if(minLength=="unset"||minLength>splitLength){
+                minLength=splitLength
+            }
+        });
+        (final[0][1]).forEach(function(finalTerms, finalIndex){
+            if(finalTerms.includes(".")){
+                var splitTerms=finalTerms.split(".")
+                splitLength=splitTerms[1].length
+            
+                if(minLength>0&&splitLength>0){
+                    while(splitLength>minLength){
+                        finalTerms = finalTerms.slice(0,splitTerms[0].length+splitLength)
+                        splitLength--
+                    }
+                }else if(minLength==0){
+                    finalTerms = splitTerms[0]
+                }else if(minLength<0){
+                    finalTerms = splitTerms[0]
+                    splitLength=0;
+                    //splitLength+splitTerms[1].length
+                    while(splitLength>minLength){
+                        finalTerms[finalTerms.length+splitLength]
+                        finalTerms = finalTerms.slice(0, finalTerms.length+splitLength-1) + "0" + finalTerms.slice(finalTerms.length+splitLength);
+                        /////gasdgadsgadgasdg nononoo
+                        splitLength--
+                    }
+                }
+                final[0][1][finalIndex] = finalTerms
+            }
+        });
+        showStep("slice",...saveForSteps,final)
+    }
+    return final
+}
 
 
 

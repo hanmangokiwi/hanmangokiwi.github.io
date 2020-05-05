@@ -1,4 +1,5 @@
 <!doctype html>
+<meta name="viewport" content="width=device-width, initial-scale=0.7">
 
 <html lang="en">
 <head>
@@ -20,39 +21,51 @@
     <a class="header-button" href="tools.html">Tools</a>
   </header>
   <script src="js/uncert-calc.js"></script>
-  <div>
+
+  <div class="section sec1">
     <h1>Uncertainty Calculator</h1>
     <p>Unit 1: Measurement is probably the hardest unit in Physics.</p>
     <p>Seriously, who actually knows how to do that stuff?</p>
     <hr noshade>
   </div>
-  <div>
-    <div class="variables">
-      <h2><center>Variables</center></h2>
-      <div class="box">
-        <form autocomplete="off" style="margin-left: 16px">
-          <span class="formula f0">a =</span>
-          <input id="width" type="text" placeholder="First Variable" class="calc-input">
-          <span class="formula f1">±</span>
-          <input id="width" type="text" placeholder="First Variable's Uncertainty" class="calc-input">
-        </form>
-      </div>
-      
-      
-      <div class="box">
-        <form autocomplete="off" style="margin-left: 16px">
-          <span class="formula f0">b =</span>
-          <input id="width" type="text" placeholder="Second Variable" class="calc-input">
-          <span class="formula f1">±</span>
-          <input id="width" type="text" placeholder="Second Variable's Uncertainty" class="calc-input">
-        </form>
+  <div class="section sec2">
+    <h2><center>Variables</center></h2>
+    <div class="var var1">
+      <div style="margin-left: 16px">
+        <span class="formula f0">a =</span>
+        <input id="uncert-1" type="text" placeholder="First Variable" class="calc-input">
+        <span class="formula f1">±</span>
+        <input id="uncert-1u" type="text" placeholder="First Variable's Uncertainty" class="calc-input">
       </div>
     </div>
-
-
-
-
+    <div class="var var2">
+      <div style="margin-left: 16px">
+        <span class="formula f0">b =</span>
+        <input id="uncert-2" type="text" placeholder="Second Variable" class="calc-input">
+        <span class="formula f1">±</span>
+        <input id="uncert-2u" type="text" placeholder="Second Variable's Uncertainty" class="calc-input">
+      </div>
+    </div>
     <hr noshade>
   </div>
+  <div class="section sec3">
+    <h2><center>Equation</center></h2>
+    <div class="equation">
+      <input id="uncert-equation" type="text" placeholder="Equation. Use a and b as variables." class="equation-input">
+    </div>
+    <hr noshade>
+  </div>
+  <div class="section sec4">
+    <center>
+      <input type="button" class="submit-form" value="Calculate!" onclick="submitEquation()" />
+    </center>
+  </div>
+  <div id="output" class="section sec5">
+    
+
+
+
+  </div>
+
 </body>
 </html>

@@ -197,7 +197,11 @@ function roundOff(final){
 
             }else{
                 //2500000000000 does not
-                var numLength = ((parseFloat(round).toExponential()).split("e")[0]).length-1
+                numFront = ((parseFloat(round).toExponential()).split("e")[0])
+                var numLength = numFront.length
+                if(numFront.includes(".")){
+                    numLength--
+                }
             }
             if(minDecimals==0||minDecimals>numLength){
                 minDecimals=numLength
@@ -594,7 +598,14 @@ function termValidity(termN){
     }
     if (termN==0 && operatorsB.includes(currentTerm)){
         return "startIllegal";
-    }else if(!isNaN(terms[termN-1]) && numItems.includes(currentTerm)){
+    }else if((isVar(currentTerm)&&isVar(nextTerm))||(isVar(currentTerm)&&nextTerm=="(")||(currentTerm==")"&&isVar(nextTerm))){
+        
+
+        terms.slice(0, termN) + "*" + terms.slice(termN+1);
+
+        return "insertMultiplication"
+    }
+    else if(!isNaN(terms[termN-1]) && numItems.includes(currentTerm)){
         terms[termN-1] = terms[termN-1]+currentTerm
         terms.splice(termN,1)
         return "reduceOne"

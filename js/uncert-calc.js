@@ -3,6 +3,14 @@ const operatorsA = ["+","-"]
 const operatorsB = ["*","/","^"]
 const otherItems = ["(",")","a","b"]
 const termItems = [...numItems,...operatorsA,...operatorsB,...otherItems];
+const termsAndService = [
+    "not whine when the calculator is wrong but rather tell me what's wrong",
+    "not use this tool to create weapons of mass destruction",
+    "buy me jello :3",
+    "give me a crisp high-five next time on the hallway",
+    "share this with your friends!"
+]
+
 
 var uncert1 = [];
 var uncert2 = [];
@@ -12,6 +20,7 @@ submitEquation = function(){
     uncert1 = [];
     uncert2 = [];
     terms = [];
+    skip = 0;
     uncert1 = [document.getElementById("uncert-1").value,document.getElementById("uncert-1u").value];
     uncert2 = [document.getElementById("uncert-2").value,document.getElementById("uncert-2u").value];
     terms = (document.getElementById("uncert-equation").value).split("");
@@ -26,6 +35,10 @@ submitEquation = function(){
         uncert1 = ["12345678.90", "3512.35"]
         uncert2 = ["0", "0"]
         terms = ["a", "+", "2"]
+    }else if(test==3){
+        uncert1 = ["63.213", "0.35"]
+        uncert2 = ["13.621", "3.4"]
+        terms = ["(","a", "*", "b",")","/","2"]
     }
 
 
@@ -57,18 +70,27 @@ function clearData(){
 }
 
 function showResult(final){
+
     if(final[0]=="error"){
         var show = document.createElement("p")
         show.innerHTML=("ERROR: "+errorInfo(final)).toString()
         outputArea.appendChild(show)
 
     }else{
-        var title = document.createElement("h2")
-        title.innerHTML=("Result")
-        outputArea.appendChild(title)
-        var show = document.createElement("p")
-        show.innerHTML=(`${final[0][1][0]}±${final[0][1][1]}`).toString()
-        outputArea.appendChild(show)
+        if(skip==0){
+            var title = document.createElement("h2")
+            title.innerHTML=("Result")
+            outputArea.appendChild(title)
+            var show = document.createElement("p")
+            show.innerHTML=(`${final[0][1][0]}±${final[0][1][1]}`).toString()
+            outputArea.appendChild(show)
+            var title = document.createElement("h2")
+            title.innerHTML=("WARNING:")
+            outputArea.appendChild(title)
+            var show = document.createElement("p")
+            show.innerHTML=(`by looking at the result, you agree to ${termsAndService[Math.floor((termsAndService.length)*(Math.random()))]}`)
+            outputArea.appendChild(show)
+        }
     }
 }
 
@@ -90,13 +112,13 @@ function showStep(operation,term1,term2, result){
         case("*"):
             var title = "Multiplication: Multiply the values, add percent uncertainties. Convert back to absolute unceratinty."
             var text = `Values: ${term1[0]} * ${term2[0]} = ${result[0]}<br>
-            Uncertainty: ${term1[0]} * ${term2[0]} * (${term1[0]} / ${term1[1]} + ${term2[0]} / ${term2[1]}) = ${result[1]}<br>`
+            Uncertainty: ${term1[0]} * ${term2[0]} * (${term1[1]} / ${term1[0]} + ${term2[1]} / ${term2[0]}) = ${result[1]}<br>`
             displayStep(title,text);
             break;
         case("/"):
             var title = "Division: Divide the values, add percent uncertainties. Convert back to absolute unceratinty."
             var text = `Values: ${term1[0]} / ${term2[0]} = ${result[0]}<br>
-            Uncertainty: ${term1[0]} / ${term2[0]} * (${term1[0]} / ${term1[1]} + ${term2[0]} / ${term2[1]}) = ${result[1]}<br>`
+            Uncertainty: ${term1[0]} / ${term2[0]} * (${term1[1]} / ${term1[0]} + ${term2[1]} / ${term2[0]}) = ${result[1]}<br>`
             displayStep(title,text);
             break;
         case("^1"):
@@ -119,8 +141,14 @@ function showStep(operation,term1,term2, result){
                 break;
         case("round"):
             var title = `Rounding: Round everything. ${term1[0]} has ${term1[1]} sig figs, so we reduce everything.`
-            var text = `Values: ${term2[0]} -> ${result[0][1][0]}<br>
-            Uncertainty: ${term2[1]} -> ${result[0][1][1]}<br>`
+            try{
+                var text = `Values: ${term2[0]} -> ${result[0][1][0]}<br>
+                Uncertainty: ${term2[1]} -> ${result[0][1][1]}<br>`
+            }catch{
+                var title = "Are you kidding me?"
+                var text = "you didn't even use the calculator properly. why don't you type the same thing on google?<br>"
+                skip=1
+            }
             displayStep(title,text);
             break;
         case("slice"):
@@ -180,7 +208,9 @@ function roundOff(final){
         if(terms.includes("b")){
             decimalsCheck.push(uncert2[0],uncert2[1])
         }
-        
+        if (decimalsCheck.length=0){
+            skip=1;
+        }
         decimalsCheck.forEach(function(round) {
             if(round.includes(".")){
                 //0.00000000000000000000000001 has many sigs
@@ -193,7 +223,11 @@ function roundOff(final){
 
             }else{
                 //2500000000000 does not
-                var numLength = ((parseFloat(round).toExponential()).split("e")[0]).length-1
+                numFront = ((parseFloat(round).toExponential()).split("e")[0])
+                var numLength = numFront.length
+                if(numFront.includes(".")){
+                    numLength--
+                }
             }
             if(minDecimals==0||minDecimals>numLength){
                 minDecimals=numLength
@@ -207,21 +241,16 @@ function roundOff(final){
             var splitNumber = (round.toExponential()).split("e");
             //trim excess
             if(splitNumber[0].includes(".")){
-
-
-
-
-
-
-
                 //this trims it
-                if(splitNumber[0].includes(".")){
-                    if(splitNumber[0].length>minDecimals){
-                        splitNumber[0]=parseFloat(splitNumber[0]).toFixed(minDecimals-1)
-                    }
-                }else{
-                    if(splitNumber[0].length>minDecimals-1){
-                        splitNumber[0]=parseFloat(splitNumber[0]).toFixed(minDecimals-1)
+                if(minDecimals>0){
+                    if(splitNumber[0].includes(".")){
+                        if(splitNumber[0].length>minDecimals){
+                            splitNumber[0]=parseFloat(splitNumber[0]).toFixed(minDecimals-1)
+                        }
+                    }else{
+                        if(splitNumber[0].length>minDecimals-1){
+                            splitNumber[0]=parseFloat(splitNumber[0]).toFixed(minDecimals-1)
+                        }
                     }
                 }
                 
@@ -230,6 +259,7 @@ function roundOff(final){
                 if(splitNumber[0][splitNumber[0].length-1]=="."){
                     if(splitNumber[0][splitNumber[0].length-2]!="0"){
                         splitNumber[0]=splitNumber[0].slice(0,splitNumber[0].length-1)
+                        //
                     }
                 }
             }else{
@@ -273,7 +303,9 @@ function roundOff(final){
     return final
 }
 function removeEnd(final){
-    if (final[0]!="error"){
+    if (skip == 1){
+        return final
+    }else if (final[0]!="error"){
         var minLength = "unset";
         var saveForSteps=[...final[0][1]];
         (final[0][1]).forEach(finalTerms => {
@@ -315,8 +347,19 @@ function removeEnd(final){
                         splitLength--
                     }
                 }
-                final[0][1][finalIndex] = finalTerms
+            }else{
+                if(minLength<0){
+                    splitLength=0;
+                    //splitLength+splitTerms[1].length
+                    while(splitLength>minLength){
+                        finalTerms[finalTerms.length+splitLength]
+                        finalTerms = finalTerms.slice(0, finalTerms.length+splitLength-1) + "0" + finalTerms.slice(finalTerms.length+splitLength);
+                        /////gasdgadsgadgasdg nononoo
+                        splitLength--
+                    }
+                }
             }
+            final[0][1][finalIndex] = finalTerms
         });
         showStep("slice",...saveForSteps,final)
     }
@@ -578,7 +621,11 @@ function termValidity(termN){
     }
     if (termN==0 && operatorsB.includes(currentTerm)){
         return "startIllegal";
-    }else if(!isNaN(terms[termN-1]) && numItems.includes(currentTerm)){
+    }else if((isVar(currentTerm)&&(nextTerm=="a"||nextTerm=="b")||(currentTerm=="a"||currentTerm=="b")&&isVar(nextTerm))||(isVar(currentTerm)&&nextTerm=="(")||(currentTerm==")"&&isVar(nextTerm))){
+        terms = [...terms.slice(0, termN+1),"*",...terms.slice(termN+1)];
+        return "reduceOne"
+    }
+    else if(!isNaN(terms[termN-1]) && numItems.includes(currentTerm)){
         terms[termN-1] = terms[termN-1]+currentTerm
         terms.splice(termN,1)
         return "reduceOne"

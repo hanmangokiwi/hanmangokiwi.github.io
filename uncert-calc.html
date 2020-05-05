@@ -31,31 +31,40 @@
   <div class="section sec2">
     <h2><center>Variables</center></h2>
     <div class="var var1">
-      <form autocomplete="off" style="margin-left: 16px">
+      <div style="margin-left: 16px">
         <span class="formula f0">a =</span>
-        <input id="width" type="text" placeholder="First Variable" class="calc-input">
+        <input id="uncert-1" type="text" placeholder="First Variable" class="calc-input">
         <span class="formula f1">±</span>
-        <input id="width" type="text" placeholder="First Variable's Uncertainty" class="calc-input">
-      </form>
+        <input id="uncert-1u" type="text" placeholder="First Variable's Uncertainty" class="calc-input">
+      </div>
     </div>
     <div class="var var2">
-      <form autocomplete="off" style="margin-left: 16px">
+      <div style="margin-left: 16px">
         <span class="formula f0">b =</span>
-        <input id="width" type="text" placeholder="Second Variable" class="calc-input">
+        <input id="uncert-2" type="text" placeholder="Second Variable" class="calc-input">
         <span class="formula f1">±</span>
-        <input id="width" type="text" placeholder="Second Variable's Uncertainty" class="calc-input">
-      </form>
+        <input id="uncert-2u" type="text" placeholder="Second Variable's Uncertainty" class="calc-input">
+      </div>
     </div>
     <hr noshade>
   </div>
   <div class="section sec3">
     <h2><center>Equation</center></h2>
     <div class="equation">
-      <form autocomplete="off">
-        <input id="width" type="text" placeholder="Equation. Use a and b as variables." class="equation-input">
-      </form>
+      <input id="uncert-equation" type="text" placeholder="Equation. Use a and b as variables." class="equation-input">
     </div>
     <hr noshade>
+  </div>
+  <div class="section sec4">
+    <center>
+      <input type="button" class="submit-form" value="Calculate!" onclick="submitEquation()" />
+    </center>
+  </div>
+  <div id="output" class="section sec5">
+    
+
+
+
   </div>
 
 </body>

@@ -132,7 +132,7 @@ function showStep(operation,term1,term2, result){
             break;
         case("^1"):
             var title = "Exponentation: Well I hope you can do this part"
-            var text = `Values: ${term1[0]} ^ ${term2[0]} = ${result}<br>
+            var text = `Values: ${term1} ^ ${term2} = ${result}<br>
             Uncertainty: Why'd you even write this? Can't you just simplify this yourself skrub<br>`
             displayStep(title,text);
             break;
@@ -452,14 +452,16 @@ function solveEquation(short){//single formula
 
     if (Array.isArray(short[0])){
         uncertPos[0]=1
-        if (short[0].length==1){
-            short[0]=short[0][0]
+        if (short[0].length==1||short[0][1]==0){
+            short[0]=(short[0][0][0]).toString()
+            uncertPos[0]=0
         }
     }
     if (Array.isArray(short[2])){
         uncertPos[1]=1
-        if (short[2].length==1){
-            short[2]=short[2][0]
+        if (short[2].length==1||short[2][1]==0){
+            short[2]=(short[2][0][0]).toString()
+            uncertPos[1]=0
         }
     }
 

@@ -26,7 +26,7 @@ submitEquation = function(){
     terms = (document.getElementById("uncert-equation").value).split("");
     
 
-    var test = 0
+    var test = 5
     if(test==1){
         uncert1 = ["1.1", "0.315"]
         uncert2 = ["0", "0"]
@@ -43,6 +43,10 @@ submitEquation = function(){
         uncert1 = ["1.2", "0.13"]
         uncert2 = ["1.6", "0.15"]
         terms = ["(","a", "+", "b",")"]
+    }else if(test==5){
+        uncert1 = ["74123.6341", "315.126317"]
+        uncert2 = ["1634.7432", "2.1"]
+        terms = ["(","a","(","a","+","b","+","a",")","/","b",")","7","^","2"]
     }
 
 
@@ -127,7 +131,7 @@ function showStep(operation,term1,term2, result){
             break;
         case("^1"):
             var title = "Exponentation: Well I hope you can do this part"
-            var text = `Values: ${term1[0]} ^ ${term2[0]} = ${result[0]}<br>
+            var text = `Values: ${term1[0]} ^ ${term2[0]} = ${result}<br>
             Uncertainty: Why'd you even write this? Can't you just simplify this yourself skrub<br>`
             displayStep(title,text);
             break;
@@ -196,14 +200,6 @@ function roundOff(final){
     if (final[0]!="error"){
         var saveForSteps = []
         //[var, digits]
-        var result = final
-        if(result=="a"){
-            result = [parseFloat(uncert1[0]),parseFloat(uncert1[1])]
-            final[0]=[...result]
-        }else if(result=="b"){
-            result = [parseFloat(uncert2[0]),parseFloat(uncert2[1])]
-            final[0]=[...result]
-        }
         var minDecimals = 0
         var decimalsCheck = []
         if(terms.includes("a")){
@@ -323,8 +319,7 @@ function removeEnd(final){
             if(finalTerms.includes(".")){
                 var splitTerms=finalTerms.split(".")
             splitLength=splitTerms[1].length
-            }
-            else{
+            }else{
                 splitLength=0
             }
             while(finalTerms[finalTerms.length+splitLength-1]=="0" && finalTerms.length+splitLength>1){
@@ -526,8 +521,9 @@ function solveEquation(short){//single formula
     }else if (short[1]=="^"){
         if (uncertPos[1]==0){
             if(uncertPos[0]==0){
+                var smallResult = short[0]**short[2]
                 showStep("^1",short[0],short[2],smallResult)
-                return short[0]^short[2]
+                return smallResult
             }else{
                 //uncert ^ number (add %)
                 var result = short[0][0]**short[2];

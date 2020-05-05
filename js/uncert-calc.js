@@ -26,11 +26,11 @@ submitEquation = function(){
     terms = (document.getElementById("uncert-equation").value).toLowerCase().split("");
     
 
-    var test = 0
+    var test = 5
     if(test==1){
-        uncert1 = ["1.1", "0.315"]
+        uncert1 = ["7412.53125", "12"]
         uncert2 = ["0", "0"]
-        terms = ["a", "+", "5"]
+        terms = ["a"]
     }else if(test==2){
         uncert1 = ["12345678.90", "3512.35"]
         uncert2 = ["0", "0"]
@@ -56,7 +56,7 @@ submitEquation = function(){
     terms.push(")")
 
     clearData()
-    var final = removeEnd(roundOff(solveFunction(evaluateFunction())))
+    var final = chopValue(rounding(solveFunction(evaluateFunction())))
     showResult(final)
 }
 
@@ -149,10 +149,13 @@ function showStep(operation,term1,term2, result){
                 displayStep(title,text);
                 break;
         case("round"):
-            var title = `Rounding: Round everything. ${term1[0]} has ${term1[1]} sig figs, so we reduce everything.`
+            if(term1[1].length==!1&&term1[1][0]=="1"){
+                var title = `Rounding: Round the uncertainty to two sig figs because there is a "1" at the front.`
+            }else{
+                var title = `Rounding: Round the uncertainty to one sig fig.`
+            }            
             try{
-                var text = `Values: ${term2[0]} -> ${result[0]}<br>
-                Uncertainty: ${term2[1]} -> ${result[1]}<br>`
+                var text = `Uncertainty: ${term1[0]} -> ${term1[1]}`
             }catch{
                 var title = "Are you kidding me?"
                 var text = "you didn't even use the calculator properly. why don't you type the same thing on google?<br>"
@@ -161,9 +164,8 @@ function showStep(operation,term1,term2, result){
             displayStep(title,text);
             break;
         case("slice"):
-            var title = `Cutting: To finish it off, we cut off everything.`
-            var text = `Values: ${term1} -> ${result[0]}<br>
-            Uncertainty: ${term2} -> ${result[1]}<br>`
+            var title = `Cutting: To finish off, we cut the value to be one less place value than the uncertainty`
+            var text = `Uncertainty: ${term1[0]} -> ${term1[1]}<br>`
             displayStep(title,text);
             break;
     }
@@ -202,187 +204,92 @@ function errorInfo(error){
             return "Unknown Error"
     }
 }
-function roundOff(final){
-    
 
-    if (final[0]!="error"){
-        var saveForSteps = []
-        //[var, digits]
-        var minDecimals = 0
-        var decimalsCheck = []
-        if(terms.includes("a")){
-            decimalsCheck.push(uncert1[0],uncert1[1])
-        }
-        if(terms.includes("b")){
-            decimalsCheck.push(uncert2[0],uncert2[1])
-        }
-        if (decimalsCheck.length==0){
-            skip=1;
-        }
-        decimalsCheck.forEach(function(round) {
-            if(round.includes(".")){
-                //0.00000000000000000000000001 has many sigs
-                if(round[0]=="0"){
-                    var numLength = round.length-2
-                }else{
-                    var numLength = round.length-1
-                }
-                
-
-            }else{
-                //2500000000000 does not
-                numFront = ((parseFloat(round).toExponential()).split("e")[0])
-                var numLength = numFront.length
-                if(numFront.includes(".")){
-                    numLength--
-                }
-            }
-            if(minDecimals==0||minDecimals>numLength){
-                minDecimals=numLength
-                //trying to show steps
-                saveForSteps[0] = [round,minDecimals]
-            }
-            
-        });
-        if(Array.isArray(final)){
-            saveForSteps.push([...final]);
-        }else{
-            saveForSteps.push(final);
-            final=[final]
-        }
-        (final).forEach(function(round, roundIndex){
-            var splitNumber = (round.toExponential()).split("e");
-            //trim excess
-            if(splitNumber[0].includes(".")){
-                //this trims it
-                if(minDecimals>0){
-                    if(splitNumber[0].includes(".")){
-                        if(splitNumber[0].length>minDecimals){
-                            splitNumber[0]=parseFloat(splitNumber[0]).toFixed(minDecimals-1)
-                        }
-                    }else{
-                        if(splitNumber[0].length>minDecimals-1){
-                            splitNumber[0]=parseFloat(splitNumber[0]).toFixed(minDecimals-1)
-                        }
-                    }
-                }
-                
-                
-                
-                if(splitNumber[0][splitNumber[0].length-1]=="."){
-                    if(splitNumber[0][splitNumber[0].length-2]!="0"){
-                        splitNumber[0]=splitNumber[0].slice(0,splitNumber[0].length-1)
-                        //
-                    }
-                }
-            }else{
-                splitNumber[0]=splitNumber[0].slice(0,minDecimals)
-            }
-            if (-5<parseInt(splitNumber[1])<5){
-                //exponent: splitNumber[1]
-                //thingy: splitLength
-                //final[roundIndex]=(parseFloat(splitNumber[0])*(10**parseInt(splitNumber[1])-1)).toString()
-                var finalNumber = [];
-                var splitLength = 0;
-
-
-                if(splitNumber[0].includes(".")){
-                    var splitResult=splitNumber[0].split(".")
-                    splitLength=splitResult[1].length
-                    splitResult=splitResult[0]+splitResult[1]
-                    finalNumber = parseFloat(splitNumber[1])-splitLength
-                }else{
-                    var splitResult = splitNumber[0]
-                    finalNumber = parseFloat(splitNumber[1])
-                }
-                if(-finalNumber>splitLength){
-                    final[roundIndex] = (10**finalNumber).toString().slice(0,-finalNumber)+splitResult
-                }else if(finalNumber<0){
-                    final[roundIndex] = splitResult.slice(0, splitResult.length+finalNumber) + "." + splitResult.slice(splitResult.length+finalNumber);
-                }else if(finalNumber>0){
-                    final[roundIndex] = splitResult+(10**finalNumber).toString().substring(1,finalNumber+1)
-                }else{
-                    final[roundIndex] = splitResult
-                }
-            }else{
-                final[roundIndex]=splitNumber[0]+"*10^"+((parseInt(splitNumber[1])).toString())
-            }
-            if (final[roundIndex][0]=="."){
-                final[roundIndex] = "0"+final[roundIndex]
-            }
-            if (final[roundIndex][0]=="0"&&final[roundIndex][1]!="."){
-                final[roundIndex] = "0."+final[roundIndex].slice(1)
-            }
-        });
-        showStep("round",...saveForSteps,final)
+function rounding(solvedEquation){
+    if(solvedEquation[0]!="error"){
+        return [solvedEquation[0].toString(),reduceFigures(solvedEquation[1])]
+    }else{
+        return solvedEquation
     }
-    return final
-}
-function removeEnd(final){
-    if (skip == 1){
-        return final
-    }else if (final[0]!="error"){
-        var minLength = "unset";
-        var saveForSteps=[...final];
-        (final).forEach(finalTerms => {
-            if(finalTerms.includes(".")){
-                var splitTerms=finalTerms.split(".")
-            splitLength=splitTerms[1].length
+    function reduceFigures(uncertainty){
+        //reduce to 1 sig fig, 2 if if starts with 1.
+        uncert = (parseFloat(uncertainty).toExponential()).split("e")
+        
+        if(uncert[0][0]=="1"&&uncert[0].length!=1){
+            //you can have 2 sig figs if the leading char is 1
+            uncert = [(parseFloat(uncert[0])*10).toFixed(0), (parseFloat(uncert[1])-1).toString()]
+        }else {
+            uncert[0] = parseFloat(uncert[0]).toFixed(0)
+        }
+        if(parseFloat(uncert[1])>=0){
+            //do values when 10^+
+            uncert = uncert[0]+(10**uncert[1]).toString().slice(1)
+        }else if(parseFloat(uncert[1])<0){
+            if(uncert[1]=="-1"&&uncert[0].length==2){
+                uncert = uncert[0][0]+"."+uncert[0][1]
             }else{
-                splitLength=0
-            }
-            while(finalTerms[finalTerms.length+splitLength-1]=="0" && finalTerms.length+splitLength>1){
-                splitLength--
-            }
-
-            if(minLength=="unset"||minLength>splitLength){
-                minLength=splitLength
-            }
-        });
-        (final).forEach(function(finalTerms, finalIndex){
-            if(finalTerms.includes(".")){
-                var splitTerms=finalTerms.split(".")
-                splitLength=splitTerms[1].length
-            
-                if(minLength>0&&splitLength>0){
-                    while(splitLength>minLength){
-                        //1.2 1.6 + 0.13 0.15
-                        finalTerms=parseFloat(finalTerms).toFixed(splitTerms[0].length+splitLength-2)
-                        
-                        splitLength--
-                    }
-                }else if(minLength==0){
-                    finalTerms = splitTerms[0]
-                }else if(minLength<0){
-                    finalTerms = splitTerms[0]
-                    splitLength=0;
-                    //splitLength+splitTerms[1].length
-                    while(splitLength>minLength){
-                        finalTerms = finalTerms.slice(0, finalTerms.length+splitLength-1) + "0" + finalTerms.slice(finalTerms.length+splitLength);
-                        /////gasdgadsgadgasdg nononoo
-                        splitLength--
-                    }
+                //do values when 10^-
+                if(uncert[0].length==2){
+                    uncert = (10**uncert[1]).toString().slice(0,2-uncert[1]-uncert[1].length)+uncert[0]
+                }else{
+                    uncert = (10**uncert[1]).toString().slice(0,3-uncert[1]-uncert[1].length)+uncert[0]
                 }
-            }else{
-                if(minLength<0){
-                    splitLength=0;
-                    //splitLength+splitTerms[1].length
-                    while(splitLength>minLength){
-                        finalTerms[finalTerms.length+splitLength]
-                        finalTerms = finalTerms.slice(0, finalTerms.length+splitLength-1) + "0" + finalTerms.slice(finalTerms.length+splitLength);
-                        /////gasdgadsgadgasdg nononoo
-                        splitLength--
-                    }
-                }
+                
             }
-            final[finalIndex] = finalTerms
-        });
-        showStep("slice",...saveForSteps,final)
+        }
+        showStep("round",[uncertainty,uncert])
+        return uncert
+        
     }
-    return final
 }
 
+function chopValue(cutFunction){
+    if(cutFunction[0]!="error"){
+        return [cutValue(cutFunction),cutFunction[1]]
+    }else{
+        return cutFunction
+    }
+    function cutValue(getSliced){
+        function findCut(uncert){
+            //find where to slice
+            var placeValues = parseFloat(uncert).toExponential().split("e")
+            var placeToCut = parseFloat(placeValues[1]);
+            if(placeValues[0].toString().length==3){
+            placeToCut--
+            }
+            return placeToCut
+        }
+        sliceTo = findCut(getSliced[1])
+        varLength = getSliced[0].toString().length  
+        firstDecimal = getSliced[0].indexOf(".")
 
+        cutPosition = parseFloat(parseFloat(getSliced[0]).toExponential().split("e")[1])-sliceTo+1
+        if(getSliced[1][0]=="1"&&getSliced[1].length!=1){
+            cutPosition--
+        }
+        
+        //this is the part we need to cut out
+        secondHalf = getSliced[0].slice(cutPosition)
+        for(sHN=0;sHN<secondHalf.length;sHN++){
+            //doenst work for 200
+            if(cutPosition+sHN>=firstDecimal){
+                secondHalf = secondHalf.slice(0,sHN+1)
+                if(secondHalf[secondHalf.length-1]=="."){
+                    secondHalf=secondHalf.slice(0,secondHalf.length-1)
+                }
+                break;
+            }else if (secondHalf[sHN]!="."){
+                secondHalf = secondHalf.slice(0,sHN) + "0" + secondHalf.slice(sHN+1)
+                secondHalf[sHN] = "0"
+            }
+        }
+        cutFinal = getSliced[0].slice(0,cutPosition)+secondHalf
+        showStep("slice",[getSliced[0],cutFinal])
+        return cutFinal
+
+
+    }
+}
 
 
 
@@ -460,6 +367,9 @@ function solveEquation(short){//single formula
 
     if (Array.isArray(short[0])){
         uncertPos[0]=1
+        while(short[0].length==1&&Array.isArray(short[0])){
+            short[0]=short[0][0]
+        }
         if (short[0].length==1||short[0][1]==0){
             short[0]=(short[0][0][0]).toString()
             uncertPos[0]=0
@@ -467,7 +377,10 @@ function solveEquation(short){//single formula
     }
     if (Array.isArray(short[2])){
         uncertPos[1]=1
-        if (short[2].length==1||short[2][1]==0){
+        while(short[2].length==1&&Array.isArray(short[2])){
+            short[2]=short[2][0]
+        }
+        if (short[2][1]==0){
             short[2]=(short[2][0][0]).toString()
             uncertPos[1]=0
         }

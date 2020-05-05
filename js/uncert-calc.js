@@ -191,6 +191,13 @@ function errorInfo(error){
             return "All fields for the first variable must be filled out"
         case "uncert2-incomplete":
             return "All fields for the second variable must be filled out"
+        case "unbalancedBrackets":
+            if(error[2]>0){
+                return `Unbalanced Brackets. ${error[2]} extra "("s`
+            }else{
+                return `Unbalanced Brackets. ${-error[2]} extra ")"s`
+            }
+            
         default:
             return "Unknown Error"
     }
@@ -241,6 +248,7 @@ function roundOff(final){
             saveForSteps.push([...final]);
         }else{
             saveForSteps.push(final);
+            final=[final]
         }
         (final).forEach(function(round, roundIndex){
             var splitNumber = (round.toExponential()).split("e");
@@ -567,7 +575,9 @@ function evaluateFunction(){//turns string into array stuffs
         for (termN=0; termN<terms.length; termN++){
             if(terms[termN]=="("){
                 bracketN++;
-                correctedFunction.push([])
+                if(correctedFunction.length==bracketN){
+                    correctedFunction.push([])
+                }
                 if(isNaN(correctedFunction[bracketN][0])){
                     correctedFunction[bracketN][0]=1;
                 }else{
@@ -584,7 +594,11 @@ function evaluateFunction(){//turns string into array stuffs
                 correctedFunction[bracketN][correctedFunction[bracketN][0]].push(terms[termN]);
             }
         }
-        return (correctedFunction);
+        if(bracketN==0){
+            return (correctedFunction);
+        }else{
+            return ["error","unbalancedBrackets",bracketN]
+        }
     }
 
 }

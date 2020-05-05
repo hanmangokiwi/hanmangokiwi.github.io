@@ -297,6 +297,9 @@ function roundOff(final){
             if (final[0][1][roundIndex][0]=="."){
                 final[0][1][roundIndex] = "0"+final[0][1][roundIndex]
             }
+            if (final[0][1][roundIndex][0]=="0"){
+                final[0][1][roundIndex] = "0."+final[0][1][roundIndex].slice(1)
+            }
         });
         showStep("round",...saveForSteps,final)
     }
@@ -621,6 +624,9 @@ function termValidity(termN){
     }
     if (termN==0 && operatorsB.includes(currentTerm)){
         return "startIllegal";
+    }else if(nextTerm==" "){
+        terms.splice(termN+1,1);
+        return "reduceOne"
     }else if((isVar(currentTerm)&&(nextTerm=="a"||nextTerm=="b")||(currentTerm=="a"||currentTerm=="b")&&isVar(nextTerm))||(isVar(currentTerm)&&nextTerm=="(")||(currentTerm==")"&&isVar(nextTerm))){
         terms = [...terms.slice(0, termN+1),"*",...terms.slice(termN+1)];
         return "reduceOne"

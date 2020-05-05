@@ -39,6 +39,10 @@ submitEquation = function(){
         uncert1 = ["63.213", "0.35"]
         uncert2 = ["13.621", "3.4"]
         terms = ["(","a", "*", "b",")","/","2"]
+    }else if(test==4){
+        uncert1 = ["1.2", "0.13"]
+        uncert2 = ["1.6", "0.15"]
+        terms = ["(","a", "+", "b",")"]
     }
 
 
@@ -82,7 +86,7 @@ function showResult(final){
             title.innerHTML=("Result")
             outputArea.appendChild(title)
             var show = document.createElement("p")
-            show.innerHTML=(`${final[0][1][0]}±${final[0][1][1]}`).toString()
+            show.innerHTML=(`${final[0]}±${final[1]}`).toString()
             outputArea.appendChild(show)
             var title = document.createElement("h2")
             title.innerHTML=("WARNING:")
@@ -142,8 +146,8 @@ function showStep(operation,term1,term2, result){
         case("round"):
             var title = `Rounding: Round everything. ${term1[0]} has ${term1[1]} sig figs, so we reduce everything.`
             try{
-                var text = `Values: ${term2[0]} -> ${result[0][1][0]}<br>
-                Uncertainty: ${term2[1]} -> ${result[0][1][1]}<br>`
+                var text = `Values: ${term2[0]} -> ${result[0]}<br>
+                Uncertainty: ${term2[1]} -> ${result[1]}<br>`
             }catch{
                 var title = "Are you kidding me?"
                 var text = "you didn't even use the calculator properly. why don't you type the same thing on google?<br>"
@@ -153,8 +157,8 @@ function showStep(operation,term1,term2, result){
             break;
         case("slice"):
             var title = `Cutting: To finish it off, we cut off everything.`
-            var text = `Values: ${term1} -> ${result[0][1][0]}<br>
-            Uncertainty: ${term2} -> ${result[0][1][1]}<br>`
+            var text = `Values: ${term1} -> ${result[0]}<br>
+            Uncertainty: ${term2} -> ${result[1]}<br>`
             displayStep(title,text);
             break;
     }
@@ -192,13 +196,13 @@ function roundOff(final){
     if (final[0]!="error"){
         var saveForSteps = []
         //[var, digits]
-        var result = (final[0][1][0])
+        var result = final
         if(result=="a"){
             result = [parseFloat(uncert1[0]),parseFloat(uncert1[1])]
-            final[0][1][0]=[...result]
+            final[0]=[...result]
         }else if(result=="b"){
             result = [parseFloat(uncert2[0]),parseFloat(uncert2[1])]
-            final[0][1][0]=[...result]
+            final[0]=[...result]
         }
         var minDecimals = 0
         var decimalsCheck = []
@@ -236,8 +240,12 @@ function roundOff(final){
             }
             
         });
-        saveForSteps.push(...final[0][1]);
-        (final[0][1][0]).forEach(function(round, roundIndex){
+        if(Array.isArray(final)){
+            saveForSteps.push([...final]);
+        }else{
+            saveForSteps.push(final);
+        }
+        (final).forEach(function(round, roundIndex){
             var splitNumber = (round.toExponential()).split("e");
             //trim excess
             if(splitNumber[0].includes(".")){
@@ -268,7 +276,7 @@ function roundOff(final){
             if (-5<parseInt(splitNumber[1])<5){
                 //exponent: splitNumber[1]
                 //thingy: splitLength
-                //final[0][1][roundIndex]=(parseFloat(splitNumber[0])*(10**parseInt(splitNumber[1])-1)).toString()
+                //final[roundIndex]=(parseFloat(splitNumber[0])*(10**parseInt(splitNumber[1])-1)).toString()
                 var finalNumber = [];
                 var splitLength = 0;
 
@@ -283,22 +291,22 @@ function roundOff(final){
                     finalNumber = parseFloat(splitNumber[1])
                 }
                 if(-finalNumber>splitLength){
-                    final[0][1][roundIndex] = (10**finalNumber).toString().slice(0,-finalNumber)+splitResult
+                    final[roundIndex] = (10**finalNumber).toString().slice(0,-finalNumber)+splitResult
                 }else if(finalNumber<0){
-                    final[0][1][roundIndex] = splitResult.slice(0, splitResult.length+finalNumber) + "." + splitResult.slice(splitResult.length+finalNumber);
+                    final[roundIndex] = splitResult.slice(0, splitResult.length+finalNumber) + "." + splitResult.slice(splitResult.length+finalNumber);
                 }else if(finalNumber>0){
-                    final[0][1][roundIndex] = splitResult+(10**finalNumber).toString().substring(1,finalNumber+1)
+                    final[roundIndex] = splitResult+(10**finalNumber).toString().substring(1,finalNumber+1)
                 }else{
-                    final[0][1][roundIndex] = splitResult
+                    final[roundIndex] = splitResult
                 }
             }else{
-                final[0][1][roundIndex]=splitNumber[0]+"*10^"+((parseInt(splitNumber[1])).toString())
+                final[roundIndex]=splitNumber[0]+"*10^"+((parseInt(splitNumber[1])).toString())
             }
-            if (final[0][1][roundIndex][0]=="."){
-                final[0][1][roundIndex] = "0"+final[0][1][roundIndex]
+            if (final[roundIndex][0]=="."){
+                final[roundIndex] = "0"+final[roundIndex]
             }
-            if (final[0][1][roundIndex][0]=="0"){
-                final[0][1][roundIndex] = "0."+final[0][1][roundIndex].slice(1)
+            if (final[roundIndex][0]=="0"&&final[roundIndex][1]!="."){
+                final[roundIndex] = "0."+final[roundIndex].slice(1)
             }
         });
         showStep("round",...saveForSteps,final)
@@ -310,8 +318,8 @@ function removeEnd(final){
         return final
     }else if (final[0]!="error"){
         var minLength = "unset";
-        var saveForSteps=[...final[0][1]];
-        (final[0][1]).forEach(finalTerms => {
+        var saveForSteps=[...final];
+        (final).forEach(finalTerms => {
             if(finalTerms.includes(".")){
                 var splitTerms=finalTerms.split(".")
             splitLength=splitTerms[1].length
@@ -327,14 +335,16 @@ function removeEnd(final){
                 minLength=splitLength
             }
         });
-        (final[0][1]).forEach(function(finalTerms, finalIndex){
+        (final).forEach(function(finalTerms, finalIndex){
             if(finalTerms.includes(".")){
                 var splitTerms=finalTerms.split(".")
                 splitLength=splitTerms[1].length
             
                 if(minLength>0&&splitLength>0){
                     while(splitLength>minLength){
-                        finalTerms = finalTerms.slice(0,splitTerms[0].length+splitLength)
+                        //1.2 1.6 + 0.13 0.15
+                        finalTerms=parseFloat(finalTerms).toFixed(splitTerms[0].length+splitLength-2)
+                        
                         splitLength--
                     }
                 }else if(minLength==0){
@@ -344,7 +354,6 @@ function removeEnd(final){
                     splitLength=0;
                     //splitLength+splitTerms[1].length
                     while(splitLength>minLength){
-                        finalTerms[finalTerms.length+splitLength]
                         finalTerms = finalTerms.slice(0, finalTerms.length+splitLength-1) + "0" + finalTerms.slice(finalTerms.length+splitLength);
                         /////gasdgadsgadgasdg nononoo
                         splitLength--
@@ -362,7 +371,7 @@ function removeEnd(final){
                     }
                 }
             }
-            final[0][1][finalIndex] = finalTerms
+            final[finalIndex] = finalTerms
         });
         showStep("slice",...saveForSteps,final)
     }
@@ -404,41 +413,45 @@ function solveFunction(reFunc){//finds each bracket chunk
             }
             reFunc.pop()
         }
+        reFunc = reFunc[0][1][0];
+        while(Array.isArray(reFunc[0])){
+            reFunc = reFunc[0]
+        }
     }
     return reFunc;
 }
 function solveChunk(chunk){//solves things by bracket chunks
     //bedmas level (^),(/*),(+-), then index 
-    while(chunk.length>1){
-        var bedmas=[0,0];
-        for(funcBIndex=1;funcBIndex<chunk.length-1;funcBIndex++){
-            if(bedmas[0]==0 && (chunk[funcBIndex]=="+"||chunk[funcBIndex]=="-")){
-                bedmas=[1,funcBIndex]
-            }else if(bedmas[0]<2 && (chunk[funcBIndex]=="*"||chunk[funcBIndex]=="/")){
-                bedmas=[2,funcBIndex]
-            }else if(bedmas[0]<3 && (chunk[funcBIndex]=="^")){
-                bedmas=[3,funcBIndex]
-            }
+    
+    chunk.forEach(function (formulaParts, formulaIndex){
+        if (formulaParts=="a"){
+            chunk[formulaIndex]=[parseFloat(uncert1[0]),parseFloat(uncert1[1])]
+        }else if (formulaParts=="b"){
+            chunk[formulaIndex]=[parseFloat(uncert2[0]),parseFloat(uncert2[1])]
         }
-        
-//error return
-        chunk[bedmas[1]-1] = [solveEquation([chunk[bedmas[1]-1],chunk[bedmas[1]],chunk[bedmas[1]+1]])];
-        chunk.splice(bedmas[1],2);
+    });
+    if(Array.isArray(chunk)){
+        while(chunk.length>1){
+            var bedmas=[0,0];
+            for(funcBIndex=1;funcBIndex<chunk.length-1;funcBIndex++){
+                if(bedmas[0]==0 && (chunk[funcBIndex]=="+"||chunk[funcBIndex]=="-")){
+                    bedmas=[1,funcBIndex]
+                }else if(bedmas[0]<2 && (chunk[funcBIndex]=="*"||chunk[funcBIndex]=="/")){
+                    bedmas=[2,funcBIndex]
+                }else if(bedmas[0]<3 && (chunk[funcBIndex]=="^")){
+                    bedmas=[3,funcBIndex]
+                }
+            }
+            
+    //error return
+            chunk[bedmas[1]-1] = [solveEquation([chunk[bedmas[1]-1],chunk[bedmas[1]],chunk[bedmas[1]+1]])];
+            chunk.splice(bedmas[1],2);
+        }
     }
-    return chunk[0][0]
+    return chunk[0]
 
 }
 function solveEquation(short){//single formula
-    if (short[0]=="a"){
-        short[0]=[parseFloat(uncert1[0]),parseFloat(uncert1[1])]
-    }else if (short[0]=="b"){
-        short[0]=[parseFloat(uncert2[0]),parseFloat(uncert2[1])]
-    }
-    if (short[2]=="a"){
-        short[2]=[parseFloat(uncert1[0]),parseFloat(uncert1[1])]
-    }else if (short[2]=="b"){
-        short[2]=[parseFloat(uncert2[0]),parseFloat(uncert2[1])]
-    }
     var uncertPos=[0,0]
 
     if (Array.isArray(short[0])){

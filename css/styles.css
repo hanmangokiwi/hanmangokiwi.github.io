@@ -117,17 +117,6 @@ input[type=text]:focus {
 .equation-input{
     width: 468px;
 }
-@media only screen and (min-width: 1050px) {
-    .section{
-        width: 980px;
-    }
-    .var{
-        margin-left: 10px;
-    }
-    .equation-input{
-        width: 964px;
-    }
-}
 
 .submit-form {
     background-color: rgb(70, 70, 70);
@@ -138,4 +127,49 @@ input[type=text]:focus {
     text-decoration: none;
     display: inline-block;
     font-size: 16px;
+    width: 468px;
   }
+
+
+h3{
+    color:white;
+    margin-left: 32px;
+    margin-right: 16px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    text-decoration: none;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@media only screen and (min-width: 1050px) {
+    .section{
+        width: 980px;
+    }
+    .var{
+        margin-left: 10px;
+    }
+    .equation-input{
+        width: 964px;
+    }
+    .submit-form{
+        width: 956px;
+    }
+}
+

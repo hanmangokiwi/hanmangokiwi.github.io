@@ -208,7 +208,7 @@ function roundOff(final){
         if(terms.includes("b")){
             decimalsCheck.push(uncert2[0],uncert2[1])
         }
-        if (decimalsCheck.length=0){
+        if (decimalsCheck.length==0){
             skip=1;
         }
         decimalsCheck.forEach(function(round) {

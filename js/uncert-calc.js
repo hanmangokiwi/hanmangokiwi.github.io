@@ -26,7 +26,7 @@ submitEquation = function(){
     terms = (document.getElementById("uncert-equation").value).toLowerCase().split("");
     
 
-    var test = 3
+    var test = 0
     if(test==1){
         uncert1 = ["7412.53125", "12"]
         uncert2 = ["0", "0"]

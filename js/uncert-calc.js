@@ -164,7 +164,7 @@ function showStep(operation,term1,term2, result){
             displayStep(title,text);
             break;
         case("slice"):
-            var title = `Cutting: To finish off, we cut the value to be one less place value than the uncertainty`
+            var title = `Cutting: To finish off, we cut the value to have the same place value as the uncertainty`
             var text = `Uncertainty: ${term1[0]} -> ${term1[1]}<br>`
             displayStep(title,text);
             break;

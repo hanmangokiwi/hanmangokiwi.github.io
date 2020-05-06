@@ -26,7 +26,7 @@ submitEquation = function(){
     terms = (document.getElementById("uncert-equation").value).toLowerCase().split("");
     
 
-    var test = 0
+    var test = 3
     if(test==1){
         uncert1 = ["7412.53125", "12"]
         uncert2 = ["0", "0"]
@@ -36,9 +36,9 @@ submitEquation = function(){
         uncert2 = ["0", "0"]
         terms = ["a", "+", "2"]
     }else if(test==3){
-        uncert1 = ["63.213", "0.35"]
-        uncert2 = ["13.621", "3.4"]
-        terms = ["(","a", "*", "b",")","/","2"]
+        uncert1 = ["1.0", "0.1"]
+        uncert2 = ["15.0", "0.1"]
+        terms = ["(","a", "+", "b",")"]
     }else if(test==4){
         uncert1 = ["1.2", "0.13"]
         uncert2 = ["1.6", "0.15"]
@@ -260,12 +260,23 @@ function chopValue(cutFunction){
             return placeToCut
         }
         sliceTo = findCut(getSliced[1])
+
+
+
+
         varLength = getSliced[0].toString().length  
         firstDecimal = getSliced[0].indexOf(".")
 
         cutPosition = parseFloat(parseFloat(getSliced[0]).toExponential().split("e")[1])-sliceTo+1
         if(getSliced[1][0]=="1"&&getSliced[1].length!=1){
             cutPosition--
+        }
+        while(cutPosition>getSliced[0].length-1){
+            if(getSliced[0].includes(".")){
+                getSliced[0] = getSliced[0]+"0"
+            }else{
+                getSliced[0] = getSliced[0]+".0"
+            }
         }
         
         //this is the part we need to cut out

@@ -40,9 +40,9 @@ submitEquation = function(){
         uncert2 = ["15.0", "0.1"]
         terms = ["(","a", "+", "b",")"]
     }else if(test==4){
-        uncert1 = ["1.2", "0.13"]
-        uncert2 = ["1.6", "0.15"]
-        terms = ["(","a", "+", "b",")"]
+        uncert1 = ["0.29", "0.10"]
+        uncert2 = ["", ""]
+        terms = ["(","a",")"]
     }else if(test==5){
         uncert1 = ["74123.6341", "315.126317"]
         uncert2 = ["1634.7432", "2.1"]
@@ -165,7 +165,7 @@ function showStep(operation,term1,term2, result){
             break;
         case("slice"):
             var title = `Cutting: To finish off, we cut the value to have the same place value as the uncertainty`
-            var text = `Uncertainty: ${term1[0]} -> ${term1[1]}<br>`
+            var text = `Value: ${term1[0]} -> ${term1[1]}<br>`
             displayStep(title,text);
             break;
     }
@@ -278,23 +278,50 @@ function chopValue(cutFunction){
                 getSliced[0] = getSliced[0]+".0"
             }
         }
-        
-        //this is the part we need to cut out
-        secondHalf = getSliced[0].slice(cutPosition)
-        for(sHN=0;sHN<secondHalf.length;sHN++){
-            //doenst work for 200
-            if(cutPosition+sHN>=firstDecimal){
-                secondHalf = secondHalf.slice(0,sHN+1)
-                if(secondHalf[secondHalf.length-1]=="."){
-                    secondHalf=secondHalf.slice(0,secondHalf.length-1)
-                }
-                break;
-            }else if (secondHalf[sHN]!="."){
-                secondHalf = secondHalf.slice(0,sHN) + "0" + secondHalf.slice(sHN+1)
-                secondHalf[sHN] = "0"
-            }
+
+
+        if(sliceTo>=0){
+            sliceTo++
         }
-        cutFinal = getSliced[0].slice(0,cutPosition)+secondHalf
+        cutFinal = getSliced[0]
+        dotIndex = cutFinal.indexOf(".")
+        if(dotIndex==-1){
+            dotIndex=cutFinal.length
+        }
+
+        //dotIndex-sliceTo-1 number to round
+        //dotIndex-sliceTo number to check
+        if(cutFinal[dotIndex-sliceTo+1]=="."){
+            if(parseInt(cutFinal[dotIndex-sliceTo+2])>=5){
+                front = cutFinal.slice(0,dotIndex-sliceTo)+(parseInt(cutFinal[dotIndex-sliceTo])+1).toString()
+            }else{
+                front = cutFinal.slice(0,dotIndex-sliceTo+1)
+            }
+            cutFinal = front
+            
+
+        }else{
+            if(parseInt(cutFinal[dotIndex-sliceTo+1])>=5){
+                front = cutFinal.slice(0,dotIndex-sliceTo)+(parseInt(cutFinal[dotIndex-sliceTo])+1).toString()
+            }else{
+                front = cutFinal.slice(0,dotIndex-sliceTo+1)
+            }
+            ending = cutFinal.slice(dotIndex-sliceTo+1)
+            if(ending!=""&&front.indexOf(".")==-1){
+                ending = "0"+ending.slice(1)
+                cutFinal = front + ending
+            }else{
+                cutFinal = front
+            }
+            
+        }
+
+
+
+
+
+
+
         showStep("slice",[getSliced[0],cutFinal])
         return cutFinal
 

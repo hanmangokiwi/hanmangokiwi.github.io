@@ -8,19 +8,27 @@
   <title>my stuff</title>
   <meta name="description" content="My website">
   <meta name="author" content="me">
-
+  <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js'></script>
+  <script type="text/javascript">
+  $(document).ready(function(){ 
+      $('#header').load("header.html");
+    });
+  </script>
   <link rel="stylesheet" href="css/styles.css?v=1.0">
 </head>
 
 <body>
-  <header>
-    <a href="index.html" class="a-link">
-      <img src="images/hanmangokiwi.png" class="home-image">
-    </a>
-    <a class="header-button" href="/home">Nothing</a>
-    <a class="header-button" href="tools.html">Tools</a>
+  <header id="header">
   </header>
-  <script src="js/uncert-calc.js"></script>
+
+
+  <div class="section sec1">
+    <h1>Welcome!</h1>
+    <p>Welcome to my website! I'll probably be uploading my projects onto here.</p>
+    <p>I'm currently learning python and javascript, and somewhat of an expert in minecraft functions :P</p>
+    <p>Please look around the website! There probably isn't much but please check out the tools section!</p>
+    <hr noshade>
+  </div>
 
 </body>
   

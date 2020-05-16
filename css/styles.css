@@ -105,12 +105,15 @@ input[type=text]:focus {
     border:3px solid black;
     margin-left: 0px;
     margin-bottom: 5px;
-    width: fit-content;
+    width: 468px;
     display: inline-block;
     overflow: hidden;
     white-space: nowrap;
 }
 
+.calc-input{
+    width: 192px;
+}
 .equation{
     width: 480px;
 }
@@ -133,21 +136,59 @@ input[type=text]:focus {
 
 h3{
     color:white;
-    margin-left: 32px;
     margin-right: 16px;
     margin-top: 4px;
     margin-bottom: 4px;
     text-decoration: none;
+    font-size: 20px;
+}
+.displaycontainer{
+    display:block;
+    width: fit-content;
+}
+.displaybody{
+    width: 600px;
+    margin-right: 20px;
+}
+.displayside{
+    flex-grow: 0;
+    margin-left: 30px;
+    width: fit-content;
+}
+.displayside{
+    margin-left: 4px;
+    margin-top: 10px;
+}
+.displaycontent{
+    margin-left: 10px;
+    width: 460px;
+    height: 260px;
 }
 
 
-
-
-
-
-
-
-
+a:link:not(.not-link) {
+    color: rgb(139, 236, 231);
+    background-color: transparent;
+    text-decoration: none;
+  }
+  
+  a:visited:not(.not-link) {
+    color: rgb(139, 236, 231);
+    background-color: transparent;
+    text-decoration: none;
+  }
+  
+  a:hover:not(.not-link) {
+    color: rgb(96, 170, 166);
+    background-color: transparent;
+    text-decoration: underline;
+  }
+  
+  a:active:not(.not-link) {
+    color: rgb(139, 236, 231);
+    background-color: transparent;
+    text-decoration: underline;
+  }
 
 
 
@@ -160,16 +201,32 @@ h3{
 
 @media only screen and (min-width: 1050px) {
     .section{
-        width: 980px;
+        width: 1200px;
     }
     .var{
         margin-left: 10px;
+        width:578px
+    }
+    .calc-input{
+        width: 246px;
     }
     .equation-input{
-        width: 964px;
+        width: 1186px;
     }
     .submit-form{
-        width: 956px;
+        width: 1186px;
+    }
+    .displaycontainer{
+        display: flex;
+    }
+    .displayside{
+        flex-grow: 1;
+        margin-top: 0px;
+        margin-left: 10px;
+    }
+    .displaycontent{
+        width: 600px;
+        height: 340px;
     }
 }
 

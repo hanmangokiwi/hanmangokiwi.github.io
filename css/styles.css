@@ -92,6 +92,20 @@ input {
     outline: none;
 }
 
+
+.text-input {
+    padding: 12px 8px;
+    margin: 6px;
+    box-sizing: border-box;
+    background-color: rgb(48,48,48);
+    color: white;
+    border: 3px solid gray;
+    -webkit-transition: 0.5s;
+    transition: 0.5s;
+    outline: none;
+    height: 100px;
+}
+
 input[type=text]:focus {
     border: 3px solid green;
 }
@@ -189,13 +203,35 @@ a:link:not(.not-link) {
     text-decoration: underline;
   }
 
+.book-page{
+    border:3px solid black;
+    width: 350px;
+    display:inline-block;
+    margin: 6px;
+}
 
+.page-text{
+    margin: 16px;
+    width: 308px;
+    height: 1800px;
+}
 
+.arrow{
+    margin: 0;
+    margin-top: 900px;
+    color: none;
+    border: 3px;
+}
+.left.arrow{
+    float: left;
+}
+.right.arrow{
+    float: right
+}
 
-
-
-
-
+.text-input{
+    width: 468px;
+}
 
 
 @media only screen and (min-width: 1050px) {
@@ -226,6 +262,19 @@ a:link:not(.not-link) {
     .displaycontent{
         width: 600px;
         height: 340px;
+    }
+    .book-page{
+        width: 1070px;
+    }
+    .page-text{
+        width: 1032px;
+        height: 500px;
+    }
+    .arrow{
+        margin-top: 250px;
+    }
+    .text-input{
+        width: 1186px;
     }
 }
 

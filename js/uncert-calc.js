@@ -307,17 +307,28 @@ function revpol(terms){
     return terms[0]
     
 }
-
 function sigfigs(value){
-    sigfig = value.length
-    if(value.includes('.')){
-        sigfig--
-    }else{
-        value = parseFloat(value)
-        while(value%10==0&&value!=0){
-            sigfig--
-            value=value/10
+    index = 0
+    foundperiod = 0
+    while(index<value.length){
+        if(value[index]=="."){
+            foundperiod = 1
+        }else if(foundperiod==1&&!isNaN(value[index])&&value[index]!="0"){
+            foundperiod = 2
+        }else if(foundperiod==2&&value[index]=="0"){
+            value = value.substr(0,index)+"1"+value.substr(index+1,value.length)
         }
+        index++
+    }
+    
+
+
+
+    fvalue = (parseFloat(value).toExponential().split("e"))[0]
+    sigfig = fvalue.length
+
+    if(fvalue.includes('.')){
+        sigfig--
     }
     return sigfig
 }

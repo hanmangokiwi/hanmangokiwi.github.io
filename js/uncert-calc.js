@@ -86,12 +86,24 @@ function clearOutput(){
 function evaluateFunction(terms){
     final = []
     temp = []
-    terms.forEach(term => {
+    brackets = terms.toString().split(")").length-terms.toString().split("(").length
+    while(brackets>0){
+        terms.unshift("(")
+        brackets--
+    }
+    while(brackets<0){
+        terms.push(")")
+        brackets++
+    }
+
+    terms.forEach((term, i) => {
         if (numItems.includes(term)){
             //pushes possibly conjoined terms to temp
             temp.push(term)
-        }else{
-            //pushes non-conjoined terms to final after pushes contents of temp
+        }else if(term=="-"&&(temp.length==0&&(["*","/","^","("].includes(final[final.length-1])&&(["a","b"].includes(terms[i+1])||!isNaN(terms[i+1])))||final.length==0)){
+            // -5->"-5"
+            temp.push(term)
+        }else{//pushes non-conjoined terms to final after pushes contents of temp
             if(temp.length!=0){
                 //a1.5 -> a * 1.5. etc
                 if([")","a","b"].includes(final[final.length-1])){
@@ -269,6 +281,26 @@ function revpol(terms){
         }
         if(index>=terms.length-2){
             index = 0
+            opcount = 0
+            termcount = 0
+            terms.forEach(term => {
+                if(term[0]=="operator"){
+                    opcount++
+                }else{
+                    termcount++
+                }
+            });
+
+            if(opcount>termcount*3){
+                return "error"
+            }else if(termcount<=2&&opcount!=1||termcount==1&&opcount==1){
+                return "error"
+            }
+
+
+
+
+
         }
 
     }
@@ -291,6 +323,12 @@ function sigfigs(value){
 }
 
 function reducesigfigs(result){
+    if(result=="error"){
+        var title = `ERROR`
+        var text = `Unmatched operator error`
+        displayStep(title,text);
+        return "error"
+    }
     minfigs = sigfigs(uncert1[0])
     if(minfigs>sigfigs(uncert2[0])){
         minfigs = sigfigs(uncert2[0])

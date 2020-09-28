@@ -330,7 +330,7 @@ function reducesigfigs(result){
         return "error"
     }
     minfigs = sigfigs(uncert1[0])
-    if(minfigs>sigfigs(uncert2[0])){
+    if(minfigs>sigfigs(uncert2[0])&&sigfigs(uncert2[0])!=0){
         minfigs = sigfigs(uncert2[0])
     }
 
@@ -354,11 +354,9 @@ function reducesigfigs(result){
     
     function convertthencut(values,figs){
         splitvalue = [parseFloat(values[0]).toExponential().split("e"),parseFloat(values[1]).toExponential().split("e")]
-        if(figs==2){
-            figs++
-        }if(figs<2){
-            figs=2
+        if(figs<0){
+            figs=0
         }
-        return [parseFloat(splitvalue[0][0]).toFixed(figs-2)+"e"+splitvalue[0][1],(parseInt(splitvalue[1][0])/10**(parseInt(splitvalue[0][1])-parseInt(splitvalue[1][1]))).toFixed(figs-2)+"e"+splitvalue[0][1]]
+        return [parseFloat(splitvalue[0][0]).toFixed(figs-1)+"e"+splitvalue[0][1],(parseInt(splitvalue[1][0])/10**(parseInt(splitvalue[0][1])-parseInt(splitvalue[1][1]))+5*10**(-figs)).toFixed(figs-1)+"e"+splitvalue[0][1]]
     }
 }

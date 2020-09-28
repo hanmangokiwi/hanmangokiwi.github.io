@@ -293,7 +293,7 @@ function revpol(terms){
 
             if(opcount>termcount*3){
                 return "error"
-            }else if(termcount<=2&&opcount!=1||termcount==1&&opcount==1){
+            }else if(!(termcount==1&&opcount==0)&&(termcount<=2&&opcount!=1||termcount==1&&opcount==1)){
                 return "error"
             }
 

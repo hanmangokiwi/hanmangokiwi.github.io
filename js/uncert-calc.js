@@ -354,10 +354,8 @@ function reducesigfigs(result){
     
     function convertthencut(values,figs){
         splitvalue = [parseFloat(values[0]).toExponential().split("e"),parseFloat(values[1]).toExponential().split("e")]
-        if(figs==1){
-            figs++
-        }if(figs<1){
-            figs=1
+        if(figs<0){
+            figs=0
         }
         return [parseFloat(splitvalue[0][0]).toFixed(figs-1)+"e"+splitvalue[0][1],(parseInt(splitvalue[1][0])/10**(parseInt(splitvalue[0][1])-parseInt(splitvalue[1][1]))+5*10**(-figs)).toFixed(figs-1)+"e"+splitvalue[0][1]]
     }

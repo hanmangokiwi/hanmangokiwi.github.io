@@ -233,7 +233,6 @@ a:link:not(.not-link) {
     width: 468px;
 }
 
-
 @media only screen and (min-width: 1050px) {
     .section{
         width: 1200px;

@@ -1,0 +1,74 @@
+
+
+.arrow{
+    margin: 0;
+    margin-top: 900px;
+    color: none;
+    border: 3px;
+}
+.left.arrow{
+    float: left;
+}
+.right.arrow{
+    float: right
+}
+
+.text-input{
+    width: 468px;
+}
+h1{
+    z-index:1;
+}
+
+p{
+    z-index:1;
+}
+.image1{
+    position:absolute;
+    z-index:0;
+}
+
+@media only screen and (min-width: 1050px) {
+    .section{
+        width: 1200px;
+    }
+    .var{
+        margin-left: 10px;
+        width:578px
+    }
+    .calc-input{
+        width: 246px;
+    }
+    .equation-input{
+        width: 1186px;
+    }
+    .submit-form{
+        width: 1186px;
+    }
+    .displaycontainer{
+        display: flex;
+    }
+    .displayside{
+        flex-grow: 1;
+        margin-top: 0px;
+        margin-left: 10px;
+    }
+    .displaycontent{
+        width: 600px;
+        height: 340px;
+    }
+    .book-page{
+        width: 1070px;
+    }
+    .page-text{
+        width: 1032px;
+        height: 500px;
+    }
+    .arrow{
+        margin-top: 250px;
+    }
+    .text-input{
+        width: 1186px;
+    }
+}
+
